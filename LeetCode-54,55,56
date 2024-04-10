@@ -1,0 +1,72 @@
+class Solution {
+/*
+54.螺旋矩阵
+给你一个 m 行 n 列的矩阵 matrix ，请按照 顺时针螺旋顺序 ，返回矩阵中的所有元素。
+*/
+  public List<Integer> spiralOrder(int[][] matrix) {
+    List<Integer> order = new ArrayList<>();
+    if(matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+      return order;
+    }
+    int rows = matrix.length, columns = matrix[0].length;
+    boolean[][] visited = new boolean[rows][columns];
+    int total = rows * columns;
+    int row = 0, column = 0;
+    int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    int directionIndex = 0;
+    for(int i = 0; i < total; i++) {
+      order.add(matrix[row][column]);
+      visited[row][column] = true;
+      int nextRow = row + directions[directionIndex][0];
+      int nextColumn = column + directions[directionIndex][1];
+      if(nextRow < 0 || nextRow >= rows || nextColumn < 0 || nextColumn >= columns || visited[nextRow][nextColumn]) {
+        directionIndex = (directionIndex + 1) % 4;
+      }
+      row += directions[directionIndex][0];
+      column += directions[directionIndex][1];
+    }
+    return order;
+  }
+/*
+55.跳跃游戏
+给你一个非负整数数组 nums ，你最初位于数组的 第一个下标 。数组中的每个元素代表你在该位置可以跳跃的最大长度。
+判断你是否能够到达最后一个下标，如果可以，返回 true ；否则，返回 false 。
+*/
+  public boolean canJump(int[] nums) {
+    int rightMost = 0;
+    int n = nums.length;
+    for(int i = 0; i < n; i++) {
+      if(i <= rightMost) {
+        rightMost = Math.max(rightMost, i + nums[i]);
+        if(rightMost >= n - 1) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+/*
+56.合并区间
+以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi] 。请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间 。
+*/
+  public int[][] merge(int[][] intervals) {
+    if(intervals.length == 0) {
+        return new int[0][2];
+    }
+    Arrays.sort(intervals, new Comparator<int[]>() {
+        public int compare(int[] interval1, int[] interval2) {
+            return interval1[0] - interval2[0];
+        }
+    });
+    List<int[]> merged = new ArrayList<int[]>();
+    for(int i = 0; i < intervals.length; i++) {
+        int L = intervals[i][0], R = intervals[i][1];
+        if(merged.size() == 0 || merged.get(merged.size() - 1)[1] < L) {
+            merged.add(new int[]{L, R});
+        } else {
+            merged.get(merged.size() - 1)[1] = Math.max(merged.get(merged.size() - 1)[1], R);
+        }
+    }
+    return merged.toArray(new int[merged.size()][]);
+  }
+}
